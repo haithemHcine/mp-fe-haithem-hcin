@@ -1,0 +1,90 @@
+<div class="container mt-4">
+    <div>
+        <h1 class="mb-4">Nouveau Produit</h1>
+        <form #produitForm="ngForm" (ngSubmit)="validerFormulaire()">
+            <table class="table">
+                <tr>
+                    <td> Code: </td>
+                    <td> <input type="text" name="code" [(ngModel)]="nouveauProduit.code" class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> Désignation: </td>
+                    <td> <input type="text" name="designation" [(ngModel)]="nouveauProduit.designation"
+                            class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> Prix: </td>
+                    <td> <input type="text" name="prix" [(ngModel)]="nouveauProduit.prix" class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> Quantité: </td>
+                    <td> <input type="text" name="quantite" [(ngModel)]="nouveauProduit.quantite"
+                            class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> Date Achat: </td>
+                    <td> <input type="date" name="dateAchat" [(ngModel)]="nouveauProduit.dateAchat"
+                            class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> En Promotion: </td>
+                    <td> <input type="checkbox" name="enPromotion" [(ngModel)]="nouveauProduit.enPromotion"
+                            class="form-check-input" /> </td>
+                </tr>
+                <tr>
+                    <td> Catégorie: </td>
+                    <td>
+                        <select name="categorie" [(ngModel)]="nouveauProduit.categorie" class="form-control">
+                            <option *ngFor="let categorie of categories" [ngValue]="categorie">{{ categorie.libelle
+                                }}</option>
+                        </select>
+                    </td>
+
+                </tr>
+                <tr class="my-3">
+                    <td></td>
+                    <td>
+                        <button type="submit" class="btn btn-primary m-2" [disabled]="!produitForm.form.valid">
+                            <i class="bi bi-check"></i> Valider
+                        </button>
+                        <button type="reset" class="btn btn-secondary my-2">
+                            <i class="bi bi-x"></i> Effacer
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div>
+        <h1 class="mb-4">Liste des produits</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Code</th>
+                    <th>Désignation</th>
+                    <th>Prix</th>
+                    <th>Quantité</th>
+                    <th>Date Achat</th>
+                    <th>En Promotion</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of produitsExistant">
+                    <td>{{p.id}}</td>
+                    <td>{{p.code}}</td>
+                    <td>{{p.designation}}</td>
+                    <td>{{p.prix}}</td>
+                    <td>{{p.quantite}}</td>
+                    <!-- <td>{{p.dateAchat | date:'short'}}</td> -->
+                    <!-- <td>{{ p.dateAchat | date: 'shortDate' }}</td> -->
+                    <td>{{ p.dateAchat | date: 'dd/MM/yyyy' }}</td>
+
+                    <td>{{p.enPromotion ? 'Oui' : 'Non'}}</td>
+                    <!-- Ajoutez d'autres colonnes selon vos besoins -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

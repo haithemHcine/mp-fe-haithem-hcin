@@ -1,0 +1,192 @@
+<div class="container mt-4">
+    <div *ngIf="afficherFormulaireEdition"> <!-- Afficher le formulaire seulement en cas d'édition -->
+        <h1 class="mb-4">Fiche Produit</h1>
+        <form #produitForm="ngForm" (ngSubmit)="validerFormulaire(produitForm)">
+            <table class="table">
+                <tr>
+                    <td> Id: </td>
+                    <td> <input id="id" name="id" type="text" [(ngModel)]="produitCourant.id" required
+                            class="form-control" readonly /> </td>
+                </tr>
+                <tr>
+                    <td> Code: </td>
+                    <td> <input type="text" name="code" [(ngModel)]="produitCourant.code" class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> Désignation: </td>
+                    <td> <input type="text" name="designation" [(ngModel)]="produitCourant.designation"
+                            class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> Prix: </td>
+                    <td> <input type="text" name="prix" [(ngModel)]="produitCourant.prix" class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> Quantité: </td>
+                    <td> <input type="text" name="quantite" [(ngModel)]="produitCourant.quantite"
+                            class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> Date Achat: </td>
+                    <td> <input type="date" name="dateAchat" [(ngModel)]="produitCourant.dateAchat"
+                            class="form-control" /> </td>
+                </tr>
+                <tr>
+                    <td> En Promotion: </td>
+                    <td> <input type="checkbox" name="enPromotion" [(ngModel)]="produitCourant.enPromotion"
+                            class="form-check-input" /> </td>
+                </tr>
+                <tr>
+                    <td> Catégorie: </td>
+                    <td>
+                        <select name="categorie" [(ngModel)]="produitCourant.categorie" class="form-control">
+                            <option *ngFor="let categorie of categories" [ngValue]="categorie">{{ categorie.libelle }}
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="my-3">
+                    <td></td>
+                    <td>
+                        <button type="submit" class="btn btn-primary m-2" [disabled]="!produitForm.form.valid">
+                            <i class="bi bi-check"></i> Valider
+                        </button>
+                        <button type="button" (click)="annulerEdition()" class="btn btn-secondary my-2">
+                            <i class="bi bi-x"></i> Annuler
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div>
+        <h1 class="mb-4">Liste des produits</h1>
+        <div class="col-2 m-2">
+            <input class="form-control" matInput (keyup)="filter($event)" placeholder="Rechercher">
+        </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td class="col-2 bs-5">
+                                        <label>Catégorie:</label>
+                                    </td>
+                                    <td class="col-2 bs-5">
+                                        <select [(ngModel)]="categorieFiltre" class="form-control">
+                                            <option value="">Toutes</option>
+                                            <option *ngFor="let categorie of categories" [ngValue]="categorie.libelle">
+                                                {{ categorie.libelle }}</option>
+                                        </select>
+                                    </td>
+
+                                    <td class="col-2 bs-5">
+                                        <label>Année:</label>
+                                    </td>
+                                    <td class="col-2 bs-5">
+                                        <!-- <input type="date" [(ngModel)]="dateFiltre" class="form-control"> -->
+                                        <input type="number" name="anneeFiltre" [(ngModel)]="anneeFiltre"
+                                            class="form-control">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-2 bs-5">
+                                        <label>Prix Supérieur:</label>
+                                    </td>
+                                    <td class="col-2 bs-5">
+                                        <input type="number" [(ngModel)]="seuilPrixSup" class="form-control">
+                                    </td>
+                                    <td class="col-2 bs-5">
+                                        <label>Prix Inférieur:</label>
+                                    </td>
+                                    <td class="col-2 bs-5">
+                                        <input type="number" [(ngModel)]="seuilPrixInf" class="form-control">
+                                    </td>
+                                    <td class="col-2 bs-5">
+                                        <label>Promotion:</label>
+                                    </td>
+                                    <td class="col-2 bs-5">
+                                        <select [(ngModel)]="enPromotionFiltre" class="form-control">
+                                            <option value="tous">Tous</option>
+                                            <option value="oui">Oui</option>
+                                            <option value="non">Non</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td class="col-2 bs-5">
+                                        <button (click)="appliquerFiltres()" class="btn btn-primary">
+                                            Filtrer
+                                            <i class="bi bi-filter"></i>
+                                        </button>
+                                    </td>
+                                    <td class="col-2 bs-5">
+                                        <button (click)="afficherTout()" class="btn btn-secondary">Afficher Tout
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        <table mat-table [dataSource]="produits" class="mat-elevation-z8" matSort>
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
+                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
+                <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+            </ng-container>
+            <ng-container matColumnDef="designation">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Désignation </th>
+                <td mat-cell *matCellDef="let element"> {{element.designation}} </td>
+            </ng-container>
+            <ng-container matColumnDef="prix">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Prix </th>
+                <td mat-cell *matCellDef="let element"> {{element.prix}} </td>
+            </ng-container>
+            <ng-container matColumnDef="quantite">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantité </th>
+                <td mat-cell *matCellDef="let element"> {{element.quantite}} </td>
+            </ng-container>
+            <ng-container matColumnDef="dateAchat">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Date d'Achat </th>
+                <td mat-cell *matCellDef="let element"> {{element.dateAchat | date:'dd/MM/yyyy'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="enPromotion">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Promotion </th>
+                <td mat-cell *matCellDef="let element"> {{element.enPromotion ? 'Oui' : 'Non'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="categorie">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Catégorie </th>
+                <td mat-cell *matCellDef="let element"> {{element.categorie?.libelle}} </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let element">
+                    <button (click)="editerProduit(element)" class="btn btn-warning me-3">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button (click)="supprimerProduit(element)" class="btn btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row
+                *matHeaderRowDef="['id', 'code', 'designation', 'prix', 'quantite', 'dateAchat', 'enPromotion', 'categorie', 'actions']">
+            </tr>
+            <tr mat-row
+                *matRowDef="let row; columns: ['id', 'code', 'designation', 'prix', 'quantite', 'dateAchat', 'enPromotion', 'categorie', 'actions'];">
+            </tr>
+        </table>
+        <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10,20]" showFirstLastButtons></mat-paginator>
+    </div>
+</div>
